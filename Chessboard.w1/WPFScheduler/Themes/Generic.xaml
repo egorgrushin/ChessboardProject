@@ -1,0 +1,317 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:WPFScheduler.Views"
+    xmlns:converters="clr-namespace:WPFScheduler"
+    xmlns:sys ="clr-namespace:System;assembly=mscorlib">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/WPFScheduler;component/Themes/ScrollbarStyling.xaml"  />
+    </ResourceDictionary.MergedDictionaries>
+
+    <SolidColorBrush x:Key="ListBorder" Color="#828790"/>
+    <converters:DateScrollValueConverter x:Key="dateScrollValueConverter"/>
+    <converters:DateThreshholdConverter x:Key="dateThreshholdConverter"/>
+    <converters:DateBrushConverter x:Key="dateBrushConverter"/>
+    <converters:DoubleAddParameterBrushConverter x:Key="doubleAddParameterBrushConverter"/>
+
+    <Color x:Key="headerBackGroundColor">#FF005D5D</Color>
+    <SolidColorBrush x:Key="headerBackgroundBrush" Color="{StaticResource headerBackGroundColor}"/>
+    <Color x:Key="gridLinesColor">#FF008197</Color>
+    <SolidColorBrush x:Key="gridLinesBrush" Color="{StaticResource gridLinesColor}"/>
+    <GridLength  x:Key="spaceForVerticalScrollBar">18</GridLength>
+    <GridLength  x:Key="spaceForHorizontalScrollBar">18</GridLength>
+    
+    
+
+    <Style TargetType="{x:Type local:SchedulerItemsControl}">
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <local:SchedulerItemsPanel 
+                        ItemHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.RowHeight, Mode=TwoWay}"
+                        ItemWidthUnit="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.ColumnWidth, Mode=TwoWay}"
+                        InternalRange="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.Range, Mode=TwoWay}"
+                        InternalCurrentDate="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.CurrentDate, Mode=TwoWay}"
+                        InternalRow="{Binding Model, Mode=TwoWay}"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="ItemTemplate" >
+            <Setter.Value>
+                <DataTemplate >
+                    <local:SchedulerItem 
+                        local:SchedulerItemsPanel.Date="{Binding Date, Mode=TwoWay}" 
+                        local:SchedulerItemsPanel.Duration="{Binding Duration, Mode=TwoWay}"
+                        local:SchedulerItemsPanel.Row="{Binding Row, Mode=TwoWay}">
+                        <local:SchedulerItem.ToolTip>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Date}"/>
+                                <TextBlock Text="{Binding Duration}"/>
+                                <TextBlock Text="{Binding Room}"/>
+                            </StackPanel>
+                        </local:SchedulerItem.ToolTip>
+                    </local:SchedulerItem>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:SchedulerItemsControl}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:SchedulerRow}">
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Margin" Value="0 -1 0 0"/>
+        <Setter Property="Height" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.RowHeight}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:SchedulerRow}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition 
+                                    Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.RowHeadersWidth}" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid Panel.ZIndex="3" 
+                                  Margin="0 0 -6 0"
+                                  ClipToBounds="True">
+                                <Rectangle Margin="0 0 6 0" Fill="{StaticResource gridLinesBrush}">
+                                    <Rectangle.Effect>
+                                        <DropShadowEffect Color="#FF696969" Direction="0" ShadowDepth="3" BlurRadius="5"/>
+                                    </Rectangle.Effect>
+                                </Rectangle>
+                                <Rectangle Margin="0 1 6 1" Fill="{StaticResource headerBackgroundBrush}"/>
+
+                            </Grid>
+                            <TextBlock FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                       Text="{Binding Header}"
+                                       Panel.ZIndex="4"/>
+
+                            <ItemsControl Margin="0 1 0 1" x:Name="grid" Grid.Column="1"
+                                          Panel.ZIndex="1"
+                                          VerticalContentAlignment="Stretch" 
+                                          HorizontalContentAlignment="Stretch"
+                                          ItemsSource="{Binding Path=Cells, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SchedulerRow}}}"
+                                          >
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                            <local:SchedulerItemsControl Panel.ZIndex="1"
+                                Grid.Column="1" 
+                                ItemsSource="{Binding SelectedItems, Mode=TwoWay}">
+                            </local:SchedulerItemsControl>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="ListBoxStyleMain" TargetType="{x:Type ListBox}">
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource ListBorder}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+        <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
+        <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBox}">
+                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"  SnapsToDevicePixels="true">
+                        <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" Style="{StaticResource ScrollViewerControlTemplate1}" >
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </ScrollViewer>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsGrouping" Value="true"/>
+                                <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <local:SchedulerRow 
+                        CellsCount="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.Range}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:HeaderItem}">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Width" 
+                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.ColumnWidth, Mode=TwoWay}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:HeaderItem}">
+
+                    <Border Background="{StaticResource gridLinesBrush}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid Margin="1 0 0 0">
+                            <Rectangle 
+                            Fill="{TemplateBinding Background}"/>
+                            <TextBlock 
+                                VerticalAlignment="Center" HorizontalAlignment="Center"
+                                Foreground="#FF97CEDA"
+                                FontSize="10"
+                                Text="{TemplateBinding Header}"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type local:SchedulerCell}">
+        <Setter Property="Width" 
+                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.ColumnWidth, Mode=TwoWay,
+            Converter={StaticResource doubleAddParameterBrushConverter}, ConverterParameter=-1}" />
+        <Setter Property="Margin" Value="1 0 0 0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:SchedulerCell}">
+                    <Border Background="#FF008197"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Rectangle 
+                            Fill="{TemplateBinding Background}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:SchedulerItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:SchedulerItem}">
+                    <Border Background="Black"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <Rectangle Fill="LightSkyBlue" Margin="1"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    
+    <Style TargetType="{x:Type local:Scheduler}">
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:Scheduler}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                        <Grid Background="#FF014D5A" Width="{Binding RowWidth}" 
+                              HorizontalAlignment="Left">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="{Binding ColumnHeadersHeight}"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="{StaticResource spaceForHorizontalScrollBar}"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding RowHeadersWidth}"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="{StaticResource spaceForVerticalScrollBar}"/>
+                            </Grid.ColumnDefinitions>
+                            <ListBox Margin="0 3 0 0" HorizontalAlignment="Stretch" Height="Auto" 
+                                     VerticalAlignment="Stretch" Grid.Row="1" 
+                                     Grid.ColumnSpan="3" Background="#FF008197" 
+                                     Style="{StaticResource ListBoxStyleMain}"
+                                     ItemsSource="{Binding Rows}" />
+                            <Rectangle Fill="{StaticResource headerBackgroundBrush}"  Grid.ColumnSpan="3">
+                                <Rectangle.Effect>
+                                    <DropShadowEffect Color="#FF696969" Direction="270" ShadowDepth="3" BlurRadius="5"/>
+                                </Rectangle.Effect>
+                            </Rectangle>
+                            <TextBlock FontSize="10" Text="{Binding CurrentDate.Year}" Foreground="#FF97CEDA" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+                            <!--<TextBlock FontSize="10" Text="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=local:Scheduler} }" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" Grid.Row="2">
+                                <TextBlock FontSize="10" Margin=" 0 0 2 0" Text="{Binding DataContext.ColumnWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock FontSize="10" Text="{Binding ActualWidth, ElementName=headersPanel }" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center"  Grid.Row="2"/>
+                            </StackPanel>-->
+                            <ItemsControl
+                                x:Name="headersPanel"
+                                Grid.Column="1"
+                                ItemsSource="{Binding Headers}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                HorizontalAlignment="Left"
+                                Background="Red">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                            
+                            <ScrollBar 
+                                Maximum="{Binding MaxDate, Converter={StaticResource dateThreshholdConverter}}"
+                                Minimum="{Binding MinDate, Converter={StaticResource dateThreshholdConverter}}"
+                                Value="{Binding CurrentDate, Converter={StaticResource dateScrollValueConverter}}"
+                                SmallChange="1"
+                                Style="{StaticResource SchedulerScrollBar}"
+                                Orientation="Horizontal" HorizontalAlignment="Stretch" 
+                                       Height="18" VerticalAlignment="Stretch" Width="Auto" Grid.Row="2"  Grid.Column="1"/>
+                            
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    
+</ResourceDictionary>
