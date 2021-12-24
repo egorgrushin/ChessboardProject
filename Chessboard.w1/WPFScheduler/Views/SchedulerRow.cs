@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPFScheduler.ViewModels;
 
 namespace WPFScheduler.Views
 {
@@ -86,11 +87,32 @@ namespace WPFScheduler.Views
                 binding.ConverterParameter = i;
                 binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(Scheduler), 1);
                 var cell = new SchedulerCell();
+                //cell.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFBBB5E5"));
                 cell.SetBinding(SchedulerCell.BackgroundProperty, binding);
                 newCells.Add(cell);
             }
             Cells = newCells;
         }
+        public SchedulerRow()
+        {
+            DataContextChanged += SchedulerRow_DataContextChanged;
+        }
+
+        void SchedulerRow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            AlertAboutLoadState(false, e.OldValue);
+            AlertAboutLoadState(true, e.NewValue);
+        }
+
+        private void AlertAboutLoadState(bool state, object objectToAlert)
+        {
+            var viewModel = (objectToAlert as SchedulerRowViewModel);
+            if (viewModel != null)
+            {
+                viewModel.IsLoaded = state;
+            }
+        }
+
         static SchedulerRow()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SchedulerRow), new FrameworkPropertyMetadata(typeof(SchedulerRow)));

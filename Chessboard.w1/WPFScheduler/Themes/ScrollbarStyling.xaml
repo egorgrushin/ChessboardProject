@@ -18,7 +18,7 @@
         <Grid Background="Transparent">
             <Path x:Name="path" Data="M3.5000001,0 L7.0000001,4 L6.0067064E-09,4 z" HorizontalAlignment="Stretch" Height="6.26" RenderTransformOrigin="0.5,0.5" Stretch="Fill" Stroke="Black" StrokeThickness="0" VerticalAlignment="Stretch" Width="7" >
                 <Path.Fill>
-                    <SolidColorBrush Color="#FF91CECD"/>
+                    <SolidColorBrush Color="#FF463B95"/>
                 </Path.Fill>
             </Path>
         </Grid>
@@ -72,7 +72,7 @@
         <Setter Property="Template" Value="{StaticResource scrollBarArrowTemplate}"/>
     </Style>
     <Style x:Key="SchedulerScrollBar" TargetType="{x:Type ScrollBar}">
-        <Setter Property="Background" Value="{StaticResource VerticalScrollBarBackground}"/>
+        <Setter Property="Background" Value="#FFBBB5E5"/>
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
         <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
@@ -99,7 +99,7 @@
                                 <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource VerticalScrollBarPageButton}"/>
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource scrollBarThumbStyle}" Margin="1, 0" Background="{StaticResource verticalScrollBarThumbBackground}" />
+                                <Thumb Style="{StaticResource scrollBarThumbStyle}" Margin="1 0 2 0" Background="#FF463B95" />
                             </Track.Thumb>
                         </Track>
                         <RepeatButton Command="{x:Static ScrollBar.LineDownCommand}" 
@@ -128,7 +128,7 @@
                 <Setter Property="MinWidth" Value="0"/>
                 <Setter Property="Height" Value="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarHeightKey}}"/>
                 <Setter Property="MinHeight" Value="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarHeightKey}}"/>
-                <Setter Property="Background" Value="{StaticResource HorizontalScrollBarBackground}"/>
+                <Setter Property="Background" Value="#FFBBB5E5"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollBar}">
@@ -156,7 +156,7 @@
                                                       Style="{StaticResource VerticalScrollBarPageButton}"/>
                                     </Track.IncreaseRepeatButton>
                                     <Track.Thumb>
-                                        <Thumb Style="{StaticResource scrollBarThumbStyle}" Margin="1, 0" Background="{StaticResource horizontalScrollBarThumbBackground}" />
+                                        <Thumb Style="{StaticResource scrollBarThumbStyle}" Margin="0, 1" Background="#FF463B95" />
                                     </Track.Thumb>
                                 </Track>
                                 <RepeatButton Grid.Column="2" 

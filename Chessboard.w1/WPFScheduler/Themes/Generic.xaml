@@ -13,12 +13,35 @@
     <converters:DateScrollValueConverter x:Key="dateScrollValueConverter"/>
     <converters:DateThreshholdConverter x:Key="dateThreshholdConverter"/>
     <converters:DateBrushConverter x:Key="dateBrushConverter"/>
-    <converters:DoubleAddParameterBrushConverter x:Key="doubleAddParameterBrushConverter"/>
+    <converters:DoubleAddParameterConverter x:Key="doubleAddParameterConverter"/>
 
-    <Color x:Key="headerBackGroundColor">#FF005D5D</Color>
-    <SolidColorBrush x:Key="headerBackgroundBrush" Color="{StaticResource headerBackGroundColor}"/>
-    <Color x:Key="gridLinesColor">#FF008197</Color>
+    <Color x:Key="columnHeadeBackgroundColor">#FF463B95</Color>
+    <SolidColorBrush x:Key="columnHeadeBackgroundBrush" Color="{StaticResource columnHeadeBackgroundColor}"/>
+
+    <Color x:Key="columnHeaderForegroundColor">#FFCAC2FF</Color>
+    <SolidColorBrush x:Key="columnHeaderForegroundBrush" Color="{StaticResource columnHeaderForegroundColor}"/>
+
+    <Color x:Key="columnHeadeBackgroundAlternativeColor">#FF584E9F</Color>
+    <SolidColorBrush x:Key="columnHeadeBackgroundAlternativeBrush" Color="{StaticResource columnHeadeBackgroundAlternativeColor}"/>
+    
+    <Color x:Key="rowHeadeBackgroundColor">#FF463B95</Color>
+    <SolidColorBrush x:Key="rowHeadeBackgroundBrush" Color="{StaticResource rowHeadeBackgroundColor}"/>
+    
+    <Color x:Key="gridLinesColor">#FF7D7898</Color>
     <SolidColorBrush x:Key="gridLinesBrush" Color="{StaticResource gridLinesColor}"/>
+    
+    <Color x:Key="gridCellColor">#FFBBB5E5</Color>
+    <SolidColorBrush x:Key="gridCellBrush" Color="{StaticResource gridCellColor}"/>
+    
+    <Color x:Key="gridCellAlternativeColor">#FFA8A2CE</Color>
+    <SolidColorBrush x:Key="gridCellAlternativeBrush" Color="{StaticResource gridCellAlternativeColor}"/>
+    
+    <Color x:Key="schedulerBackgroundColor">#FFBBB5E5</Color>
+    <SolidColorBrush x:Key="schedulerBackgroundBrush" Color="{StaticResource schedulerBackgroundColor}"/>
+    
+    
+    
+    
     <GridLength  x:Key="spaceForVerticalScrollBar">18</GridLength>
     <GridLength  x:Key="spaceForHorizontalScrollBar">18</GridLength>
     
@@ -96,7 +119,7 @@
                                         <DropShadowEffect Color="#FF696969" Direction="0" ShadowDepth="3" BlurRadius="5"/>
                                     </Rectangle.Effect>
                                 </Rectangle>
-                                <Rectangle Margin="0 1 6 1" Fill="{StaticResource headerBackgroundBrush}"/>
+                                <Rectangle Margin="0 1 6 1" Fill="{StaticResource rowHeadeBackgroundBrush}"/>
 
                             </Grid>
                             <TextBlock FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" 
@@ -126,8 +149,6 @@
         </Setter>
     </Style>
     <Style x:Key="ListBoxStyleMain" TargetType="{x:Type ListBox}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource ListBorder}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
@@ -200,7 +221,7 @@
                             Fill="{TemplateBinding Background}"/>
                             <TextBlock 
                                 VerticalAlignment="Center" HorizontalAlignment="Center"
-                                Foreground="#FF97CEDA"
+                                Foreground="{StaticResource columnHeaderForegroundBrush}"
                                 FontSize="10"
                                 Text="{TemplateBinding Header}"/>
                         </Grid>
@@ -211,8 +232,9 @@
     </Style>
     <Style TargetType="{x:Type local:SchedulerCell}">
         <Setter Property="Width" 
-                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.ColumnWidth, Mode=TwoWay,
-            Converter={StaticResource doubleAddParameterBrushConverter}, ConverterParameter=-1}" />
+                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}},
+            Path=DataContext.ColumnWidth, Mode=TwoWay,
+            Converter={StaticResource doubleAddParameterConverter}, ConverterParameter=-1}" />
         <Setter Property="Margin" Value="1 0 0 0"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -236,7 +258,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid>
-                            <Rectangle Fill="LightSkyBlue" Margin="1"/>
+                            <Rectangle Fill="Gold" Margin="1"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>
@@ -253,8 +275,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Scheduler}">
                     <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-                        <Grid Background="#FF014D5A" Width="{Binding RowWidth}" 
-                              HorizontalAlignment="Left">
+                        <Grid Background="{StaticResource schedulerBackgroundBrush}" Width="{Binding RowWidth}" 
+                              HorizontalAlignment="Left" VerticalAlignment="Top">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="{Binding ColumnHeadersHeight}"/>
                                 <RowDefinition/>
@@ -265,20 +287,19 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="{StaticResource spaceForVerticalScrollBar}"/>
                             </Grid.ColumnDefinitions>
-                            <ListBox Margin="0 3 0 0" HorizontalAlignment="Stretch" Height="Auto" 
-                                     VerticalAlignment="Stretch" Grid.Row="1" 
-                                     Grid.ColumnSpan="3" Background="#FF008197" 
+                            <ListBox Margin="0 3 0 0" HorizontalAlignment="Stretch" 
+                                     VerticalAlignment="Top" Grid.Row="1" 
+                                     Grid.ColumnSpan="3" Background="{StaticResource gridLinesBrush}" 
                                      Style="{StaticResource ListBoxStyleMain}"
                                      ItemsSource="{Binding Rows}" />
-                            <Rectangle Fill="{StaticResource headerBackgroundBrush}"  Grid.ColumnSpan="3">
+                            <Rectangle Fill="{StaticResource columnHeadeBackgroundBrush}"  Grid.ColumnSpan="3">
                                 <Rectangle.Effect>
                                     <DropShadowEffect Color="#FF696969" Direction="270" ShadowDepth="3" BlurRadius="5"/>
                                 </Rectangle.Effect>
                             </Rectangle>
                             <TextBlock FontSize="10" Text="{Binding CurrentDate.Year}" Foreground="#FF97CEDA" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
-                            <!--<TextBlock FontSize="10" Text="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=local:Scheduler} }" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <StackPanel Orientation="Horizontal" Grid.Row="2">
+                            <!--<StackPanel Orientation="Horizontal" Grid.Row="2">
                                 <TextBlock FontSize="10" Margin=" 0 0 2 0" Text="{Binding DataContext.ColumnWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 <TextBlock FontSize="10" Text="{Binding ActualWidth, ElementName=headersPanel }" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center"  Grid.Row="2"/>
                             </StackPanel>-->

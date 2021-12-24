@@ -26,18 +26,7 @@ namespace WPFScheduler.ViewModels
             set { items = value;  }
         }
 
-        public void SetSelectedItems(DateTime beginDate, int availableRange)
-        {
-            items.Sort();
-            var newSelectedData = new ObservableCollection<SchedulerItemViewModel>();
-            var filteredData = loader.FirstLoadData(items, beginDate, availableRange);
-            foreach (var item in filteredData)
-            {
-                newSelectedData.Add(new SchedulerItemViewModel(item));
-            }
-            SelectedItems = newSelectedData;
-        }
-
+        private List<ISchedulerItemData> selectedItemsData;
         private string header;
         public string Header
         {
@@ -59,6 +48,7 @@ namespace WPFScheduler.ViewModels
 
         public SchedulerRowViewModel(ISchedulerRowData model)
         {
+            IsLoaded = false;
             Model = model;
             Header = string.Format("Row {0}", model.Number);
             Items = new List<ISchedulerItemData>();
@@ -73,18 +63,51 @@ namespace WPFScheduler.ViewModels
 
         #region Methods
 
+        public void SetSelectedItems(DateTime beginDate, int availableRange)
+        {
+
+            if (true)
+            {
+                selectedItemsData = loader.FirstLoadData(Items, beginDate, availableRange);
+                ObservableCollection<SchedulerItemViewModel> newSelectedData = null;
+                if (selectedItemsData != null)
+                {
+                    newSelectedData = new ObservableCollection<SchedulerItemViewModel>();
+                    foreach (var item in selectedItemsData)
+                    {
+                        newSelectedData.Add(new SchedulerItemViewModel(item));
+                    }
+                }
+                SelectedItems = newSelectedData;
+            }
+        }
+
         public void UpdateSelectedItems(DateTime oldDate, DateTime newDate, int availableRange)
         {
-            var filteredData = loader.FilterData(Items, oldDate, newDate, availableRange);
-            var newSelectedData = new ObservableCollection<SchedulerItemViewModel>();
-            foreach (var item in filteredData)
+            
+            if (IsLoaded)
             {
-                newSelectedData.Add(new SchedulerItemViewModel(item));
+                selectedItemsData = loader.FilterData(selectedItemsData, oldDate, newDate, availableRange);
+                ObservableCollection<SchedulerItemViewModel> newSelectedData = null;
+                if (selectedItemsData != null)
+                {
+                    newSelectedData = new ObservableCollection<SchedulerItemViewModel>();
+                    foreach (var item in selectedItemsData)
+                    {
+                        newSelectedData.Add(new SchedulerItemViewModel(item));
+                    }
+                }
+                SelectedItems = newSelectedData;
             }
-            SelectedItems = newSelectedData;
+            else
+            {
+
+            }
         }
 
         #endregion
-        
+
+
+        public bool IsLoaded { get; set; }
     }
 }

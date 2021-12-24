@@ -29,25 +29,40 @@ namespace Chessboard.w1
         {
             InitializeComponent();
             var list = new List<ISchedulerRowData>();
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 500; i++)
             {
                 list.Add(new MyRow() { Number = i });
             }
             scheduler.Positions= list;
 
             var items = new List<ISchedulerItemData>();
-            var lastDur = -1;
             int j = 0;
             int z = 1;
-            foreach (var row in list)
-            {
-                var lastDate = new DateTime(2014, 8, 27);
-                for (int i = 0; i < 100; i++)
-                {
-                    lastDate = lastDate.AddDays(1);
-                    items.Add(new MyClass() { Name = i.ToString(), Duration = 1, Date = lastDate, Row = row });
-                }
+            //foreach (var row in list)
+            //{
+            //    for (int i = 0; i < 300; i++)
+            //    {
+            //        items.Add(new MyClass() { Name = i.ToString(), Duration = lastDur, Date = lastDate, Row = list[rd.Next(30)] });
+            //        lastDate = lastDate.AddDays(lastDur);
+            //        lastDur = rd.Next(5) + 1;
+            //    }
+            //}
 
+            var lastDur = rd.Next(5) + 1;
+            var lastDate = new DateTime(2014, 8, 27);
+            for (int i = 0; i < 100; i++)
+            {
+                items.Add(new MyClass() { Name = i.ToString(), Duration = lastDur, Date = lastDate, Row = list[rd.Next(30)] });
+                lastDate = lastDate.AddDays(lastDur);
+                lastDur = rd.Next(5) + 1;
+            }
+            lastDur = rd.Next(5) + 1;
+            lastDate = new DateTime(2014, 8, 27);
+            for (int i = 0; i < 100; i++)
+            {
+                items.Add(new MyClass() { Name = i.ToString(), Duration = lastDur, Date = lastDate, Row = list[rd.Next(30) + 30] });
+                lastDate = lastDate.AddDays(lastDur);
+                lastDur = rd.Next(5) + 1;
             }
             scheduler.Items = items;
 
@@ -69,5 +84,6 @@ namespace Chessboard.w1
             if (e.Key == Key.Left)
                 scheduler.CurrentDate = scheduler.CurrentDate.AddDays(-1);
         }
+
     }
 }

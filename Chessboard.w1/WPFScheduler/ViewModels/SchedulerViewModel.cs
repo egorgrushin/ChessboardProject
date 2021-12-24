@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows;
 using WPFScheduler.Models;
 using WPFScheduler.Views;
+using System.Windows.Media;
 
 namespace WPFScheduler.ViewModels
 {
@@ -108,6 +109,7 @@ namespace WPFScheduler.ViewModels
                 currentDate =  value;
                 AlertRows(oldDate);
                 OnPropertyChanged("CurrentDate");
+
             }
         }
         private int range;
@@ -258,6 +260,7 @@ namespace WPFScheduler.ViewModels
                 var brushBinding = new Binding("CurrentDate");
                 brushBinding.Converter = new DateHeaderBrushConverter();
                 brushBinding.ConverterParameter = i;
+                //header.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF463B95"));
                 header.SetBinding(HeaderItem.BackgroundProperty, brushBinding);
 
                 newHeaders.Add(header);

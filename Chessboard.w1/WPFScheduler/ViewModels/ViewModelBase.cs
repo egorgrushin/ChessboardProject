@@ -17,8 +17,15 @@ namespace WPFScheduler.ViewModels
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
-        #region Singleton
+        private TimeSpan elapsed;
 
+        public TimeSpan Elapsed
+        {
+            get { return elapsed; }
+            set { elapsed = value; OnPropertyChanged("Elapsed"); }
+        }
+        
+        #region Singleton
         private static readonly ViewModelBase instance = new ViewModelBase();
 
         public static ViewModelBase Instance
@@ -35,7 +42,6 @@ namespace WPFScheduler.ViewModels
         protected void OnPropertyChanged(string propertyName)
         {
             this.VerifyPropertyName(propertyName);
-
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)
             {

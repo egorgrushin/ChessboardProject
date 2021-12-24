@@ -55,8 +55,14 @@ namespace WPFScheduler.Views
         public SchedulerItemsControl()
         {
             MouseUp += SchedulerItemsControl_MouseUp;
+            DragEnter += SchedulerItemsControl_DragEnter;
             SelectionChanged += SchedulerItemsControl_SelectionChanged;
             
+        }
+
+        void SchedulerItemsControl_DragEnter(object sender, DragEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         void SchedulerItemsControl_SelectionChanged(DependencyObject sender, SchedulerSelectionChangedEventArgs e)
