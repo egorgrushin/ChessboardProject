@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WPFScheduler;
 using WPFScheduler.Models;
+using WPFScheduler.ViewModels;
 
 namespace Chessboard.w1
 {
@@ -83,6 +84,16 @@ namespace Chessboard.w1
                 scheduler.CurrentDate = scheduler.CurrentDate.AddDays(1);
             if (e.Key == Key.Left)
                 scheduler.CurrentDate = scheduler.CurrentDate.AddDays(-1);
+        }
+
+        private void listbox_Drop(object sender, DragEventArgs e)
+        {
+            SchedulerItemViewModel item = (SchedulerItemViewModel)e.Data.GetData("dragData");
+            if (item != null)
+            {
+                listbox.Items.Add(item);
+            }
+
         }
 
     }

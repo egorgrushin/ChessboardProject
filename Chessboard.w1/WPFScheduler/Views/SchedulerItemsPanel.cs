@@ -218,5 +218,9 @@ namespace WPFScheduler.Views
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SchedulerItemsPanel), new FrameworkPropertyMetadata(typeof(SchedulerItemsPanel)));
         }
+        public SchedulerItemsPanel()
+        {
+            Background = Brushes.Transparent;
+        }
     }
 }

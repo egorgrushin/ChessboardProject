@@ -20,7 +20,7 @@
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
         <Rectangle Fill="#FF3E3A51" Grid.ColumnSpan="2" Grid.Row="1"/>
-        <ListBox x:Name="listbox"  Grid.Row="2" Visibility="Collapsed">
+        <ListBox x:Name="listbox"  Grid.Row="2" AllowDrop="True"  Drop="listbox_Drop">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">

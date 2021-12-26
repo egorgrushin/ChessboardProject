@@ -48,6 +48,17 @@ namespace WPFScheduler.Views
     {
 
 
+        public bool IsAlternative
+        {
+            get { return (bool)GetValue(IsAlternativeProperty); }
+            set { SetValue(IsAlternativeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsAlternative.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsAlternativeProperty =
+            DependencyProperty.Register("IsAlternative", typeof(bool), typeof(SchedulerCell), new PropertyMetadata(false));
+
+        
         static SchedulerCell()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SchedulerCell), new FrameworkPropertyMetadata(typeof(SchedulerCell)));

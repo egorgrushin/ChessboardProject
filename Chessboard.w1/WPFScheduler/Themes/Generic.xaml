@@ -15,14 +15,14 @@
     <converters:DateBrushConverter x:Key="dateBrushConverter"/>
     <converters:DoubleAddParameterConverter x:Key="doubleAddParameterConverter"/>
 
-    <Color x:Key="columnHeadeBackgroundColor">#FF463B95</Color>
-    <SolidColorBrush x:Key="columnHeadeBackgroundBrush" Color="{StaticResource columnHeadeBackgroundColor}"/>
+    <Color x:Key="columnHeaderBackgroundColor">#FF463B95</Color>
+    <SolidColorBrush x:Key="columnHeaderBackgroundBrush" Color="{StaticResource columnHeaderBackgroundColor}"/>
 
     <Color x:Key="columnHeaderForegroundColor">#FFCAC2FF</Color>
     <SolidColorBrush x:Key="columnHeaderForegroundBrush" Color="{StaticResource columnHeaderForegroundColor}"/>
 
-    <Color x:Key="columnHeadeBackgroundAlternativeColor">#FF584E9F</Color>
-    <SolidColorBrush x:Key="columnHeadeBackgroundAlternativeBrush" Color="{StaticResource columnHeadeBackgroundAlternativeColor}"/>
+    <Color x:Key="columnHeaderBackgroundAlternativeColor">#FF584E9F</Color>
+    <SolidColorBrush x:Key="columnHeaderBackgroundAlternativeBrush" Color="{StaticResource columnHeaderBackgroundAlternativeColor}"/>
     
     <Color x:Key="rowHeadeBackgroundColor">#FF463B95</Color>
     <SolidColorBrush x:Key="rowHeadeBackgroundBrush" Color="{StaticResource rowHeadeBackgroundColor}"/>
@@ -48,6 +48,7 @@
     
 
     <Style TargetType="{x:Type local:SchedulerItemsControl}">
+        <Setter Property="AllowDrop" Value="True"/>
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
@@ -130,8 +131,7 @@
                                           Panel.ZIndex="1"
                                           VerticalContentAlignment="Stretch" 
                                           HorizontalContentAlignment="Stretch"
-                                          ItemsSource="{Binding Path=Cells, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SchedulerRow}}}"
-                                          >
+                                          ItemsSource="{Binding Path=Cells}" >
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel Orientation="Horizontal"/>
@@ -198,17 +198,18 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <local:SchedulerRow 
-                        CellsCount="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.Range}" />
+                    <local:SchedulerRow />
                 </DataTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
     <Style TargetType="{x:Type local:HeaderItem}">
+        <Setter Property="Background" Value="{StaticResource columnHeaderBackgroundBrush}"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Width" 
-                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}, Path=DataContext.ColumnWidth, Mode=TwoWay}" />
+                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}},
+            Path=DataContext.ColumnWidth, Mode=TwoWay}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:HeaderItem}">
@@ -229,8 +230,14 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsAlternative" Value="True">
+                <Setter Property="Background" Value="{StaticResource columnHeaderBackgroundAlternativeBrush}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style TargetType="{x:Type local:SchedulerCell}">
+        <Setter Property="Background" Value="{StaticResource gridCellBrush}"/>
         <Setter Property="Width" 
                 Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}},
             Path=DataContext.ColumnWidth, Mode=TwoWay,
@@ -239,15 +246,16 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:SchedulerCell}">
-                    <Border Background="#FF008197"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                        <Rectangle 
+                    <Rectangle 
                             Fill="{TemplateBinding Background}"/>
-                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsAlternative" Value="True">
+                <Setter Property="Background" Value="{StaticResource gridCellAlternativeBrush}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="{x:Type local:SchedulerItem}">
@@ -292,13 +300,13 @@
                                      Grid.ColumnSpan="3" Background="{StaticResource gridLinesBrush}" 
                                      Style="{StaticResource ListBoxStyleMain}"
                                      ItemsSource="{Binding Rows}" />
-                            <Rectangle Fill="{StaticResource columnHeadeBackgroundBrush}"  Grid.ColumnSpan="3">
+                            <Rectangle Fill="{StaticResource columnHeaderBackgroundBrush}"  Grid.ColumnSpan="3">
                                 <Rectangle.Effect>
                                     <DropShadowEffect Color="#FF696969" Direction="270" ShadowDepth="3" BlurRadius="5"/>
                                 </Rectangle.Effect>
                             </Rectangle>
                             <TextBlock FontSize="10" Text="{Binding CurrentDate.Year}" Foreground="#FF97CEDA" VerticalAlignment="Center" HorizontalAlignment="Center" />
-
+                            
                             <!--<StackPanel Orientation="Horizontal" Grid.Row="2">
                                 <TextBlock FontSize="10" Margin=" 0 0 2 0" Text="{Binding DataContext.ColumnWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Scheduler}}}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 <TextBlock FontSize="10" Text="{Binding ActualWidth, ElementName=headersPanel }" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center"  Grid.Row="2"/>

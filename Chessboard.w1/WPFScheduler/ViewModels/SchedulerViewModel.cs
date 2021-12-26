@@ -107,6 +107,7 @@ namespace WPFScheduler.ViewModels
             {
                 var oldDate = currentDate;
                 currentDate =  value;
+                DetermineAlternativeHeaders();
                 AlertRows(oldDate);
                 OnPropertyChanged("CurrentDate");
 
@@ -212,12 +213,34 @@ namespace WPFScheduler.ViewModels
 
         #region Methods
 
+        public void DetermineAlternativeHeaders()
+        {
+            if (Headers != null)
+            {
+                for (int i = 0; i < Headers.Count; i++)
+                {
+                    var currentHeader = Headers[i];
+                    if (CurrentDate.Date.AddDays(i).DayOfWeek == DayOfWeek.Saturday ||
+                        CurrentDate.Date.AddDays(i).DayOfWeek == DayOfWeek.Sunday)
+                    {
+                        if (!currentHeader.IsAlternative)
+                            currentHeader.IsAlternative = true;
+                    }
+                    else
+                    {
+                        if (currentHeader.IsAlternative)
+                            currentHeader.IsAlternative = false;
+                    }
+                }
+            }
+        }
         private void AlertRows(DateTime oldDate)
         {
             if (Rows != null)
             {
                 foreach (var row in Rows)
                 {
+                    row.CurrentDate = CurrentDate;
                     row.UpdateSelectedItems(oldDate, CurrentDate, Range);
                 }
             }
@@ -229,6 +252,8 @@ namespace WPFScheduler.ViewModels
             foreach (var row in RowsModel)
             {
                 var rowViewModel = new SchedulerRowViewModel(row);
+                rowViewModel.Range = Range;
+                rowViewModel.CurrentDate = CurrentDate;
                 if (ItemsModel != null)
                 {
                     var suitableItems = new List<ISchedulerItemData>();
@@ -257,15 +282,10 @@ namespace WPFScheduler.ViewModels
                 datebinding.Converter = new DateShiftConverter();
                 datebinding.ConverterParameter = i;
                 header.SetBinding(HeaderItem.HeaderProperty, datebinding);
-                var brushBinding = new Binding("CurrentDate");
-                brushBinding.Converter = new DateHeaderBrushConverter();
-                brushBinding.ConverterParameter = i;
-                //header.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF463B95"));
-                header.SetBinding(HeaderItem.BackgroundProperty, brushBinding);
-
                 newHeaders.Add(header);
             }
             Headers = newHeaders;
+            DetermineAlternativeHeaders();
         }
         public Size Measure(Size constraint)
         {

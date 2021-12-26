@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPFScheduler.Models;
+using WPFScheduler.ViewModels;
 
 namespace WPFScheduler.Views
 {
@@ -47,28 +49,90 @@ namespace WPFScheduler.Views
     /// </summary>
     public class SchedulerItemsControl : ItemsControl
     {
-        
+
+        private Point startDragPosition;
         static SchedulerItemsControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SchedulerItemsControl), new FrameworkPropertyMetadata(typeof(SchedulerItemsControl)));
         }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (e.LeftButton == MouseButtonState.Pressed && SelectedItem != null)
+            {
+                var offset = startDragPosition - e.GetPosition(null);
+                if (Math.Abs(offset.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                    Math.Abs(offset.Y) > SystemParameters.MinimumVerticalDragDistance)
+                {
+                    var dragObject = new DataObject("dragData", (SelectedItem.DataContext));
+                    DragDrop.DoDragDrop(this, dragObject, DragDropEffects.Move);
+                }
+            }
+        }
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            var hitTest = VisualTreeHelper.HitTest(this, e.GetPosition(this));
+            var hitTestResult =
+                VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(hitTest.VisualHit))) as SchedulerItem;
+            if (hitTestResult != null)
+            {
+                SelectedItem = hitTestResult;
+                startDragPosition = e.GetPosition(null);
+            }
+
+        }
+        protected override void OnDragEnter(DragEventArgs e)
+        {
+            base.OnDragEnter(e);
+        }
         public SchedulerItemsControl()
         {
-            MouseUp += SchedulerItemsControl_MouseUp;
-            DragEnter += SchedulerItemsControl_DragEnter;
-            SelectionChanged += SchedulerItemsControl_SelectionChanged;
-            
         }
 
-        void SchedulerItemsControl_DragEnter(object sender, DragEventArgs e)
+        void SchedulerItemsControl_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && SelectedItem != null)
+            {
+                var offset = startDragPosition - e.GetPosition(null);
+                if (Math.Abs(offset.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                    Math.Abs(offset.Y) > SystemParameters.MinimumVerticalDragDistance)
+                {
+                    var dragObject = new DataObject("d", SelectedItem.DataContext);
+                    DragDrop.DoDragDrop(SelectedItem, dragObject, DragDropEffects.Move);
+                }
+            }
+        }
+
+        void SchedulerItemsControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var hitTest = VisualTreeHelper.HitTest(this, e.GetPosition(this));
+            var hitTestResult =
+                VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(hitTest.VisualHit))) as SchedulerItem;
+            if (hitTestResult != null)
+            {
+                SelectedItem = hitTestResult;
+                startDragPosition = e.GetPosition(null);
+            }
+        }
+
+        void SchedulerItemsControl_PreviewDragEnter(object sender, DragEventArgs e)
         {
             throw new NotImplementedException();
         }
+        
 
-        void SchedulerItemsControl_SelectionChanged(DependencyObject sender, SchedulerSelectionChangedEventArgs e)
+
+        void SchedulerItemsControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //e.SelectedItem.Date = e.SelectedItem.Date.AddDays(5);
         }
+
+        void SchedulerItemsControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            
+        }
+
+
 
         void SchedulerItemsControl_MouseUp(object sender, MouseButtonEventArgs e)
         {

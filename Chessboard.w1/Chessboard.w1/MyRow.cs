@@ -18,5 +18,9 @@ namespace Chessboard.w1
         }
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public override string ToString()
+        {
+            return Number.ToString();
+        }
     }
 }

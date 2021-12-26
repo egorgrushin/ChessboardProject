@@ -47,52 +47,7 @@ namespace WPFScheduler.Views
     /// </summary>
     public class SchedulerRow : Control
     {
-        private List<object> cells;
-        public List<object> Cells
-        {
-            get { return cells; }
-            set { cells = value; }
-        }
 
-
-
-        public int CellsCount
-        {
-            get { return (int)GetValue(CellsCountProperty); }
-            set { SetValue(CellsCountProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for CellsCount.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CellsCountProperty =
-            DependencyProperty.Register("CellsCount", typeof(int), typeof(SchedulerRow), new FrameworkPropertyMetadata(
-                0, 
-                FrameworkPropertyMetadataOptions.AffectsMeasure,
-                new PropertyChangedCallback(OnCellsCountChanged)));
-
-        private static void OnCellsCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (e.NewValue != e.OldValue)
-                ((SchedulerRow)d).BuildCells();
-        }
-
-
-
-        private void BuildCells()
-        {
-            var newCells = new List<object>();
-            for (int i = 0; i < CellsCount; i++)
-            {
-                var binding = new Binding("DataContext.CurrentDate");
-                binding.Converter = new DateBrushConverter();
-                binding.ConverterParameter = i;
-                binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(Scheduler), 1);
-                var cell = new SchedulerCell();
-                //cell.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFBBB5E5"));
-                cell.SetBinding(SchedulerCell.BackgroundProperty, binding);
-                newCells.Add(cell);
-            }
-            Cells = newCells;
-        }
         public SchedulerRow()
         {
             DataContextChanged += SchedulerRow_DataContextChanged;
