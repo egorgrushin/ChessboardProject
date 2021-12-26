@@ -11,7 +11,6 @@ namespace Chessboard.w1
     public class MyClass : ISchedulerItemData, INotifyPropertyChanged
     {
         private DateTime date;
-
         public DateTime Date
         {
             get { return date; }
